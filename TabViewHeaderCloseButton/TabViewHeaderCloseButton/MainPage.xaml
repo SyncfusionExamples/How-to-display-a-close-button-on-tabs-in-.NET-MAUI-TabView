@@ -2,77 +2,77 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:core="clr-namespace:Syncfusion.Maui.Core;assembly=Syncfusion.Maui.Core"
+             xmlns:local="clr-namespace:TabViewHeaderCloseButton"
              x:Class="TabViewHeaderCloseButton.MainPage">
 
 
-    <tabView:SfTabView ItemsSource="{Binding Tabs}" EnableRippleAnimation="False" IndicatorBackground="LightPink" IndicatorPlacement="Fill">
+    <ContentPage.Resources>
+        <Style x:Key="CloseIconButtonStyle" TargetType="core:SfEffectsView">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <Setter.Value>
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="Transparent" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                            <VisualState x:Name="PointerOver">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="#E6E6E6" />
+                                </VisualState.Setters>
+                            </VisualState>
+
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+
+    <tabView:SfTabView ItemsSource="{Binding TabItems}"
+                   IndicatorPlacement="Fill">
+
         <tabView:SfTabView.HeaderItemTemplate>
             <DataTemplate>
-                <Grid Padding="8,4" ColumnSpacing="6">
+                <Grid Padding="8,4" ColumnSpacing="8">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <Label WidthRequest="110" Text="{Binding Title}" VerticalTextAlignment="Center"/>
+                    <Label Grid.Column="0" WidthRequest="90"
+                       Text="{Binding Title}" HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
 
-                    <Border ZIndex="1"
-                            HorizontalOptions="End"
-                            VerticalOptions="Start"
-                            Margin="14,-6,0,0"
-                            BackgroundColor="LightBlue"
-                            WidthRequest="18"
-                            HeightRequest="18"
-                            Padding="0">
-                        <Button Text="✕"
-                              FontSize="12"
-                              BackgroundColor="Red"
-                              TextColor="Black"
-                              WidthRequest="18"
-                              HeightRequest="18"
-                              Clicked="OnCloseClicked"
-                              CommandParameter="{Binding .}" />
-                    </Border>
+                    <core:SfEffectsView Grid.Column="1" Style="{StaticResource CloseIconButtonStyle}" HorizontalOptions="End" VerticalOptions="Center" 
+                    WidthRequest="22" HeightRequest="22" >
+
+                        <core:SfEffectsView.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                        </core:SfEffectsView.GestureRecognizers>
+                        <core:SfEffectsView.Content>
+                            <Grid>
+                                <Label Text="✕" FontSize="14"  HorizontalTextAlignment="Center" VerticalTextAlignment="Center" TextColor="Black"/>
+                            </Grid>
+                        </core:SfEffectsView.Content>
+                    </core:SfEffectsView>
                 </Grid>
             </DataTemplate>
         </tabView:SfTabView.HeaderItemTemplate>
 
         <tabView:SfTabView.ContentItemTemplate>
             <DataTemplate>
-                <Grid Padding="16" RowSpacing="12">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="300"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <Grid Padding="16">
+                    <Label Text="{Binding ContentText}"
+                       FontSize="14" WidthRequest="400" HorizontalOptions="Start" HorizontalTextAlignment="Start"
+                       TextColor="#333333"
+                       LineBreakMode="WordWrap" />
 
-                    <HorizontalStackLayout Grid.Row="0" Spacing="8">
-                        <Label Text="{Binding Title}"
-                       FontAttributes="Bold"
-                       FontSize="18"
-                       VerticalTextAlignment="Center"/>
-                    </HorizontalStackLayout>
-
-                    <BoxView Grid.Row="1" HeightRequest="1" Color="#E0E0E0"/>
-
-                    <ScrollView Grid.Row="2">
-                        <Label Text="{Binding ContentText}"
-                       FontSize="14"
-                       TextColor="#333333"/>
-                    </ScrollView>
-                    <HorizontalStackLayout Grid.Row="3" Spacing="10">
-                        <Button Text="Refresh"
-                        BackgroundColor="#2196F3"
-                        TextColor="White"
-                        CornerRadius="8"
-                        Clicked="OnRefreshClicked"/>
-                        <Button Text="More"
-                        BackgroundColor="#EEEEEE"
-                        TextColor="#333333"
-                        CornerRadius="8"
-                        Clicked="OnMoreClicked"/>
-                    </HorizontalStackLayout>
                 </Grid>
             </DataTemplate>
         </tabView:SfTabView.ContentItemTemplate>

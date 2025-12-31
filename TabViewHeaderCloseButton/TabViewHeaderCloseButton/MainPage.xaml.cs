@@ -1,4 +1,5 @@
 ﻿using Microsoft.Maui.Controls;
+using Syncfusion.Maui.Core;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,37 +11,51 @@ namespace TabViewHeaderCloseButton
 {
     public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
-        public ObservableCollection<Model> Tabs { get; } = new()
-        {
-            new Model { Title = "Home",   ContentText = "Home content" },
-            new Model { Title = "Tasks",  ContentText = "Tasks content" },
-            new Model { Title = "Reports",ContentText = "Reports content" }
-        };
 
+        private readonly MainPageViewModel viewModel = new MainPageViewModel();
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = this;
+            BindingContext = viewModel;
         }
 
-        private async Task OnRefreshClicked(object sender, EventArgs e)
+        private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
         {
-            await DisplayAlert("Refreshed", "Content was refreshed.", "OK");
+            var model = (sender as View)?.BindingContext as Model;
+            if (model != null && viewModel.TabItems.Contains(model))
+            {
+                viewModel.TabItems.Remove(model);
+            }
         }
 
-        private async Task OnMoreClicked(object sender, EventArgs e)
-        {
-            await DisplayAlert("More", "More actions coming soon.", "OK");
-        }
-
-
-        private void OnCloseClicked(object sender, System.EventArgs e)
-        {
-            if (sender is Button btn && btn.CommandParameter is Model tab && Tabs.Contains(tab))
-                Tabs.Remove(tab);
-        }
     }
 
+    public class MainPageViewModel
+    {
+        public ObservableCollection<Model> TabItems { get; set; }
+        public MainPageViewModel()
+        {
+            TabItems = new ObservableCollection<Model>
+            {
+               new Model
+                {
+                    Title = "Home",
+                    ContentText = "Welcome to the Home tab. Here you can find an overview of your application and quick access to essential features."
+                },
+                new Model
+                {
+                    Title = "Tasks",
+                    ContentText = "Manage your tasks efficiently. Add new tasks, track progress, and stay organized to meet your goals."
+                },
+                new Model
+                {
+                    Title = "Reports",
+                    ContentText = "View detailed reports and analytics. Gain insights into your performance and make informed decisions."
+                }
+            };
+        }
+
+    }
     public class Model
     {
         public string Title { get; set; }
